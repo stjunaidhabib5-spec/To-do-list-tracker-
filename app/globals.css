@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+
+/* ─── Light Mode Tokens ─────────────────────────────────── */
+:root {
+  --background:        #f4f6fb;
+  --surface:           #ffffff;
+  --surface-subtle:    #eef0f7;
+  --foreground:        #0f172a;
+  --foreground-muted:  #64748b;
+  --border:            rgba(0, 0, 0, 0.08);
+
+  /* Accent */
+  --accent:            #6366f1;
+  --accent-hover:      #4f46e5;
+  --accent-subtle:     rgba(99, 102, 241, 0.12);
+
+  /* Category colours */
+  --academic:          #3b82f6;
+  --academic-bg:       rgba(59, 130, 246, 0.1);
+  --skill:             #8b5cf6;
+  --skill-bg:          rgba(139, 92, 246, 0.1);
+
+  /* Glassmorphism */
+  --glass-bg:          rgba(255, 255, 255, 0.65);
+  --glass-border:      rgba(255, 255, 255, 0.4);
+  --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.08);
+
+  /* Nav */
+  --nav-bg:            rgba(255, 255, 255, 0.8);
+  --nav-border:        rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Dark Mode Tokens ──────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background:        #0d0f1a;
+    --surface:           #151827;
+    --surface-subtle:    #1c2035;
+    --foreground:        #e2e8f0;
+    --foreground-muted:  #94a3b8;
+    --border:            rgba(255, 255, 255, 0.07);
+
+    --accent:            #818cf8;
+    --accent-hover:      #a5b4fc;
+    --accent-subtle:     rgba(129, 140, 248, 0.15);
+
+    --academic:          #60a5fa;
+    --academic-bg:       rgba(96, 165, 250, 0.12);
+    --skill:             #a78bfa;
+    --skill-bg:          rgba(167, 139, 250, 0.12);
+
+    --glass-bg:          rgba(21, 24, 39, 0.75);
+    --glass-border:      rgba(255, 255, 255, 0.08);
+    --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.4);
+
+    --nav-bg:            rgba(13, 15, 26, 0.85);
+    --nav-border:        rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* ─── Tailwind Theme Extension ──────────────────────────── */
+@theme inline {
+  --color-background:     var(--background);
+  --color-surface:        var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-foreground:     var(--foreground);
+  --color-muted:          var(--foreground-muted);
+  --color-accent:         var(--accent);
+  --color-academic:       var(--academic);
+  --color-skill:          var(--skill);
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Base Styles ───────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* ─── Utility Classes ───────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.badge-academic {
+  background-color: var(--academic-bg);
+  color: var(--academic);
+}
+
+.badge-skill {
+  background-color: var(--skill-bg);
+  color: var(--skill);
+}
+
+/* ─── Animations ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.45s ease forwards;
+}
+
+.animate-stagger > * {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+.animate-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.animate-stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.animate-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.animate-stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.animate-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+
