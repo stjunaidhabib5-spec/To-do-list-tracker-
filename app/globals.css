@@ -144,3 +144,142 @@ body {
 .animate-stagger > *:nth-child(4) { animation-delay: 0.20s; }
 .animate-stagger > *:nth-child(5) { animation-delay: 0.25s; }
 
+
+/* ─── FullCalendar Theme Overrides ──────────────────────── */
+/* Force FC to use our design tokens so it blends with the app */
+
+.task-calendar-wrapper .fc {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.875rem;
+}
+
+/* Remove default white background */
+.task-calendar-wrapper .fc-theme-standard td,
+.task-calendar-wrapper .fc-theme-standard th,
+.task-calendar-wrapper .fc-scrollgrid,
+.task-calendar-wrapper .fc-scrollgrid td {
+  border-color: var(--border);
+}
+
+.task-calendar-wrapper .fc-daygrid-day,
+.task-calendar-wrapper .fc-timegrid-slot,
+.task-calendar-wrapper .fc-col-header-cell {
+  background: transparent;
+}
+
+/* Day number */
+.task-calendar-wrapper .fc-daygrid-day-number,
+.task-calendar-wrapper .fc-col-header-cell-cushion {
+  color: var(--foreground-muted);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Today highlight */
+.task-calendar-wrapper .fc-day-today {
+  background: var(--accent-subtle) !important;
+}
+
+.task-calendar-wrapper .fc-day-today .fc-daygrid-day-number {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Toolbar buttons */
+.task-calendar-wrapper .fc-toolbar-title {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.task-calendar-wrapper .fc-button {
+  background: var(--surface-subtle) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--foreground-muted) !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  padding: 0.3rem 0.75rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.15s ease !important;
+  box-shadow: none !important;
+  text-transform: none !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.task-calendar-wrapper .fc-button:hover {
+  background: var(--accent-subtle) !important;
+  color: var(--accent) !important;
+  border-color: transparent !important;
+}
+
+.task-calendar-wrapper .fc-button-active,
+.task-calendar-wrapper .fc-button-primary:not(:disabled).fc-button-active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+/* Event chips */
+.task-calendar-wrapper .fc-event {
+  border-radius: 0.375rem;
+  border-width: 1px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 1px 5px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.task-calendar-wrapper .fc-event:hover {
+  opacity: 0.85;
+}
+
+/* Completed task events — muted + strikethrough */
+.task-calendar-wrapper .fc-event-completed .fc-event-title {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* "N more" link */
+.task-calendar-wrapper .fc-daygrid-more-link {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Now indicator line */
+.task-calendar-wrapper .fc-timegrid-now-indicator-line {
+  border-color: var(--accent);
+}
+
+/* Scrollbar inside timegrid */
+.task-calendar-wrapper .fc-scroller::-webkit-scrollbar {
+  width: 4px;
+}
+.task-calendar-wrapper .fc-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+.task-calendar-wrapper .fc-scroller::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+
+/* ─── Skeleton Shimmer ──────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-subtle) 25%,
+    var(--border) 50%,
+    var(--surface-subtle) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 4px;
+}
+
