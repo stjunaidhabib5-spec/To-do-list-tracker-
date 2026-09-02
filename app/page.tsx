@@ -37,13 +37,13 @@ export default async function DashboardPage() {
 
       {/* ── Page Heading ── */}
       <header id="dashboard-header" className="animate-fade-in-up space-y-1">
-        <p className="text-sm font-bold text-slate-900 dark:text-white">
+        <p className="text-slate-600 dark:text-slate-300 font-medium text-sm">
           {greeting}
         </p>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-slate-900 dark:text-white font-bold text-3xl tracking-tight">
           Dashboard
         </h1>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-slate-500 dark:text-slate-300 text-sm font-normal mt-1">
           Your tasks and milestones, all in one place.
         </p>
       </header>
