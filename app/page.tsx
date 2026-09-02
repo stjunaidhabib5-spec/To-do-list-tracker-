@@ -37,13 +37,13 @@ export default async function DashboardPage() {
 
       {/* ── Page Heading ── */}
       <header id="dashboard-header" className="animate-fade-in-up space-y-1">
-        <p className="text-sm font-medium" style={{ color: 'var(--foreground-muted)' }}>
+        <p className="text-sm font-bold text-slate-900 dark:text-white">
           {greeting}
         </p>
-        <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
           Dashboard
         </h1>
-        <p className="text-sm" style={{ color: 'var(--foreground-muted)' }}>
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Your tasks and milestones, all in one place.
         </p>
       </header>
@@ -65,12 +65,12 @@ export default async function DashboardPage() {
         aria-label="Task categories"
         className="flex items-center gap-3 animate-fade-in-up flex-wrap"
       >
-        <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--foreground-muted)' }}>
+        <span className="text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white">
           Categories
         </span>
 
         {/* Academic pill */}
-        <span className="badge-academic inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border shadow-sm text-blue-600 dark:text-blue-400 border-slate-200 dark:border-slate-700">
           {/* Graduation cap icon */}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
         </span>
 
         {/* Skill Acquisition pill */}
-        <span className="badge-skill inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border shadow-sm text-purple-600 dark:text-purple-400 border-slate-200 dark:border-slate-700">
           {/* Zap / lightning icon */}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>

@@ -4,11 +4,11 @@
 
 /* ─── Light Mode Tokens ─────────────────────────────────── */
 :root {
-  --background:        #f4f6fb;
+  --background:        #f8fafc;
   --surface:           #ffffff;
-  --surface-subtle:    #eef0f7;
+  --surface-subtle:    #f1f5f9;
   --foreground:        #0f172a;
-  --foreground-muted:  #64748b;
+  --foreground-muted:  #475569;
   --border:            rgba(0, 0, 0, 0.08);
 
   /* Accent */
@@ -46,10 +46,10 @@
 
 /* ─── Dark Mode Tokens (via data-theme attribute) ────────── */
 [data-theme="dark"] {
-  --background:        #0d0f1a;
+  --background:        #0b0f19;
   --surface:           #151827;
   --surface-subtle:    #1c2035;
-  --foreground:        #e2e8f0;
+  --foreground:        #f8fafc;
   --foreground-muted:  #94a3b8;
   --border:            rgba(255, 255, 255, 0.07);
 
@@ -142,14 +142,14 @@ body::before {
   background-size: 320px 320px;
   mix-blend-mode: multiply;
   filter: saturate(0) brightness(0.1);
-  opacity: 0.55;
+  opacity: 0.12;
   transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 [data-theme="dark"] body::before {
   mix-blend-mode: screen;
   filter: brightness(2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  opacity: 0.45;
+  opacity: 0.15;
 }
 
 /* ─── Utility Classes ───────────────────────────────────── */

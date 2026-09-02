@@ -38,8 +38,7 @@ export default function Navbar() {
             T
           </span>
           <span
-            className="text-lg font-semibold tracking-tight"
-            style={{ color: 'var(--foreground)' }}
+            className="text-lg font-semibold tracking-tight text-slate-900 dark:text-white"
           >
             Task<span style={{ color: 'var(--accent)' }}>Flow</span>
           </span>

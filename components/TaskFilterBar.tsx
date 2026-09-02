@@ -48,11 +48,10 @@ export default function TaskFilterBar({
     return counts.skill;
   };
 
-  // Per-category accent colours for inactive pill icons
-  const accentFor = (value: FilterValue) => {
-    if (value === 'Academic') return 'var(--academic)';
-    if (value === 'Skill Acquisition') return 'var(--skill)';
-    return 'var(--accent)';
+  const textClassFor = (value: FilterValue) => {
+    if (value === 'Academic') return 'text-blue-600 dark:text-blue-400';
+    if (value === 'Skill Acquisition') return 'text-purple-600 dark:text-purple-400';
+    return 'text-slate-600 dark:text-slate-400';
   };
 
   return (
@@ -69,38 +68,21 @@ export default function TaskFilterBar({
             key={value}
             id={`filter-${value.toLowerCase().replace(' ', '-')}`}
             onClick={() => onFilterChange(value)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold cursor-pointer"
-            style={{
-              background: isActive ? 'var(--accent)' : 'var(--surface)',
-              color: isActive ? '#ffffff' : accentFor(value),
-              border: isActive ? '1px solid transparent' : '1px solid var(--border)',
-              boxShadow: isActive
-                ? '0 2px 10px rgba(99,102,241,0.35), 0 1px 3px rgba(99,102,241,0.2)'
-                : 'var(--card-shadow)',
-              transition: 'transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease',
-            }}
-            onMouseEnter={e => {
-              if (!isActive) {
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = 'var(--card-shadow-hover)';
-              }
-            }}
-            onMouseLeave={e => {
-              if (!isActive) {
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = 'var(--card-shadow)';
-              }
-            }}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold cursor-pointer border shadow-sm transition-all duration-150 ${
+              isActive
+                ? 'bg-indigo-500 text-white border-transparent shadow-[0_2px_10px_rgba(99,102,241,0.35)]'
+                : `bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-slate-200 dark:border-slate-700 hover:-translate-y-[1px] hover:shadow-md ${textClassFor(value)}`
+            }`}
             aria-pressed={isActive}
           >
             {FILTER_ICONS[value]}
             {label}
             <span
-              className="text-xs px-1.5 py-0.5 rounded-full font-bold tabular-nums"
-              style={{
-                background: isActive ? 'rgba(255,255,255,0.2)' : `color-mix(in srgb, ${accentFor(value)} 15%, transparent)`,
-                color: isActive ? '#ffffff' : accentFor(value),
-              }}
+              className={`text-xs px-1.5 py-0.5 rounded-full font-bold tabular-nums ${
+                isActive
+                  ? 'bg-white/20 text-white'
+                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+              }`}
             >
               {countFor(value)}
             </span>
