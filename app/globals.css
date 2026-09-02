@@ -22,42 +22,62 @@
   --skill:             #8b5cf6;
   --skill-bg:          rgba(139, 92, 246, 0.1);
 
+  /* Priority colours */
+  --priority-high:     #ef4444;
+  --priority-high-bg:  rgba(239, 68, 68, 0.1);
+  --priority-med:      #f59e0b;
+  --priority-med-bg:   rgba(245, 158, 11, 0.1);
+  --priority-low:      #10b981;
+  --priority-low-bg:   rgba(16, 185, 129, 0.1);
+
   /* Glassmorphism */
   --glass-bg:          rgba(255, 255, 255, 0.65);
   --glass-border:      rgba(255, 255, 255, 0.4);
-  --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.08);
+  --glass-shadow:      0 4px 24px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  /* Card shadow */
+  --card-shadow:       0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0,0,0,0.06);
 
   /* Nav */
-  --nav-bg:            rgba(255, 255, 255, 0.8);
+  --nav-bg:            rgba(255, 255, 255, 0.85);
   --nav-border:        rgba(0, 0, 0, 0.06);
 }
 
-/* ─── Dark Mode Tokens ──────────────────────────────────── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background:        #0d0f1a;
-    --surface:           #151827;
-    --surface-subtle:    #1c2035;
-    --foreground:        #e2e8f0;
-    --foreground-muted:  #94a3b8;
-    --border:            rgba(255, 255, 255, 0.07);
+/* ─── Dark Mode Tokens (via data-theme attribute) ────────── */
+[data-theme="dark"] {
+  --background:        #0d0f1a;
+  --surface:           #151827;
+  --surface-subtle:    #1c2035;
+  --foreground:        #e2e8f0;
+  --foreground-muted:  #94a3b8;
+  --border:            rgba(255, 255, 255, 0.07);
 
-    --accent:            #818cf8;
-    --accent-hover:      #a5b4fc;
-    --accent-subtle:     rgba(129, 140, 248, 0.15);
+  --accent:            #818cf8;
+  --accent-hover:      #a5b4fc;
+  --accent-subtle:     rgba(129, 140, 248, 0.15);
 
-    --academic:          #60a5fa;
-    --academic-bg:       rgba(96, 165, 250, 0.12);
-    --skill:             #a78bfa;
-    --skill-bg:          rgba(167, 139, 250, 0.12);
+  --academic:          #60a5fa;
+  --academic-bg:       rgba(96, 165, 250, 0.12);
+  --skill:             #a78bfa;
+  --skill-bg:          rgba(167, 139, 250, 0.12);
 
-    --glass-bg:          rgba(21, 24, 39, 0.75);
-    --glass-border:      rgba(255, 255, 255, 0.08);
-    --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.4);
+  --priority-high:     #f87171;
+  --priority-high-bg:  rgba(248, 113, 113, 0.12);
+  --priority-med:      #fbbf24;
+  --priority-med-bg:   rgba(251, 191, 36, 0.12);
+  --priority-low:      #34d399;
+  --priority-low-bg:   rgba(52, 211, 153, 0.12);
 
-    --nav-bg:            rgba(13, 15, 26, 0.85);
-    --nav-border:        rgba(255, 255, 255, 0.06);
-  }
+  --glass-bg:          rgba(21, 24, 39, 0.75);
+  --glass-border:      rgba(255, 255, 255, 0.08);
+  --glass-shadow:      0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0,0,0,0.3);
+
+  --card-shadow:       0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.3);
+
+  --nav-bg:            rgba(13, 15, 26, 0.9);
+  --nav-border:        rgba(255, 255, 255, 0.06);
 }
 
 /* ─── Tailwind Theme Extension ──────────────────────────── */
@@ -84,13 +104,25 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Smooth theme transitions across all elements */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/* Opt-out from transition for elements where it causes flicker */
+.no-theme-transition,
+.no-theme-transition * {
+  transition: none !important;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
 }
 
@@ -106,16 +138,37 @@ body {
 .surface {
   background: var(--surface);
   border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
 }
 
 .badge-academic {
   background-color: var(--academic-bg);
   color: var(--academic);
+  border: 1px solid color-mix(in srgb, var(--academic) 20%, transparent);
 }
 
 .badge-skill {
   background-color: var(--skill-bg);
   color: var(--skill);
+  border: 1px solid color-mix(in srgb, var(--skill) 20%, transparent);
+}
+
+.badge-high {
+  background-color: var(--priority-high-bg);
+  color: var(--priority-high);
+  border: 1px solid color-mix(in srgb, var(--priority-high) 20%, transparent);
+}
+
+.badge-med {
+  background-color: var(--priority-med-bg);
+  color: var(--priority-med);
+  border: 1px solid color-mix(in srgb, var(--priority-med) 20%, transparent);
+}
+
+.badge-low {
+  background-color: var(--priority-low-bg);
+  color: var(--priority-low);
+  border: 1px solid color-mix(in srgb, var(--priority-low) 20%, transparent);
 }
 
 /* ─── Animations ────────────────────────────────────────── */

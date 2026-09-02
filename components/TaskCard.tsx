@@ -30,15 +30,18 @@ export default function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
   return (
     <div
       id={`task-card-${task.id}`}
-      className="surface rounded-2xl p-5 flex items-start gap-4 transition-all duration-200 group"
-      style={{ opacity: task.is_completed ? 0.65 : 1 }}
+      className="surface rounded-2xl p-5 flex items-start gap-4 group"
+      style={{
+        opacity: task.is_completed ? 0.65 : 1,
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease',
+      }}
       onMouseEnter={e => {
         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)';
-        (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--glass-shadow)';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--card-shadow-hover)';
       }}
       onMouseLeave={e => {
         (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
-        (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = 'var(--card-shadow)';
       }}
     >
       {/* ── Checkbox ── */}

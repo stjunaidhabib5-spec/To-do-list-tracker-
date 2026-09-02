@@ -25,9 +25,12 @@ export default async function DashboardPage() {
     { id: 'stat-upcoming',  title: 'Due This Week',  value: dueThisWeek,    icon: '📅', accentVar: '--accent',   delay: 200 },
   ] as const;
 
-  const greeting = now.getHours() < 12 ? 'Good morning'
-    : now.getHours() < 18 ? 'Good afternoon'
-    : 'Good evening';
+  const hour = now.getHours();
+  const greeting = hour < 12
+    ? 'Good morning ☀️'
+    : hour < 17
+    ? 'Good afternoon 🌤️'
+    : 'Good evening 🌙';
 
   return (
     <div id="dashboard-page" className="max-w-6xl mx-auto px-6 py-10 space-y-10">
@@ -35,7 +38,7 @@ export default async function DashboardPage() {
       {/* ── Page Heading ── */}
       <header id="dashboard-header" className="animate-fade-in-up space-y-1">
         <p className="text-sm font-medium" style={{ color: 'var(--foreground-muted)' }}>
-          {greeting} 👋
+          {greeting}
         </p>
         <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
           Dashboard
@@ -60,13 +63,30 @@ export default async function DashboardPage() {
       <section
         id="dashboard-categories"
         aria-label="Task categories"
-        className="flex items-center gap-3 animate-fade-in-up"
+        className="flex items-center gap-3 animate-fade-in-up flex-wrap"
       >
-        <span className="text-sm font-medium" style={{ color: 'var(--foreground-muted)' }}>
-          Categories:
+        <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--foreground-muted)' }}>
+          Categories
         </span>
-        <span className="badge-academic text-xs font-semibold px-3 py-1 rounded-full">Academic</span>
-        <span className="badge-skill text-xs font-semibold px-3 py-1 rounded-full">Skill Acquisition</span>
+
+        {/* Academic pill */}
+        <span className="badge-academic inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full">
+          {/* Graduation cap icon */}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          Academic
+        </span>
+
+        {/* Skill Acquisition pill */}
+        <span className="badge-skill inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full">
+          {/* Zap / lightning icon */}
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+          Skill Acquisition
+        </span>
       </section>
 
       {/* ── Calendar preview ── */}

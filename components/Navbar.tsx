@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   { href: '/',          label: 'Dashboard', id: 'nav-dashboard' },
@@ -87,6 +88,9 @@ export default function Navbar() {
             );
           })}
         </ul>
+
+        {/* ── Theme Toggle ── */}
+        <ThemeToggle />
       </nav>
     </header>
   );

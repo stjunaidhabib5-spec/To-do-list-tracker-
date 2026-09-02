@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import AddTaskFAB from '@/components/AddTaskFAB';
 import ToastProvider from '@/components/ToastProvider';
+import ThemeProvider from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'TaskFlow — Personal Task & Calendar Tracker',
@@ -14,14 +15,24 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        {/* Anti-flash: apply stored theme before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('taskflow-theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',t||(d?'dark':'light'));}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col antialiased">
-        <ToastProvider>
-          <Navbar />
-          <main id="main-content" className="flex-1">
-            {children}
-          </main>
-          <AddTaskFAB />
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <Navbar />
+            <main id="main-content" className="flex-1">
+              {children}
+            </main>
+            <AddTaskFAB />
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

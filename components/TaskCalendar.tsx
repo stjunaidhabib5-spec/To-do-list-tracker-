@@ -64,25 +64,42 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     const isToday = todayStr === cellDateStr;
 
     days.push(
-      <div key={`day-${i}`} className="p-2 border-r border-b border-[var(--border)] min-h-[100px] md:min-h-[120px] flex flex-col gap-1 transition-colors hover:bg-[var(--foreground)]/5">
-        <div className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full ${isToday ? 'bg-[var(--primary)] text-[var(--primary-foreground)]' : 'text-[var(--foreground)]'}`}>
+      <div key={`day-${i}`} className="p-2 border-r border-b border-[var(--border)] min-h-[100px] md:min-h-[120px] flex flex-col gap-1 transition-colors hover:bg-[var(--foreground)]/[0.03]">
+        <div
+          className={`text-sm font-semibold w-7 h-7 flex items-center justify-center rounded-full transition-colors ${
+            isToday
+              ? 'text-white'
+              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+          }`}
+          style={isToday ? { background: 'var(--accent)' } : {}}
+        >
           {i}
         </div>
         <div className="flex flex-col gap-1 mt-1 overflow-y-auto max-h-[120px] no-scrollbar">
           {dayTasks.map(task => {
             const isAcademic = task.category === 'Academic';
             return (
-              <div 
-                key={task.id} 
-                className={`text-xs px-1.5 py-1 rounded-md truncate cursor-default transition-opacity ${task.is_completed ? 'opacity-40 line-through' : 'opacity-90 hover:opacity-100'}`}
-                style={{ 
+              <div
+                key={task.id}
+                className={`group/chip relative text-xs px-2 py-1 rounded-md truncate cursor-default transition-all duration-150 flex items-center gap-1 ${
+                  task.is_completed ? 'opacity-40' : 'opacity-90 hover:opacity-100 hover:shadow-sm'
+                }`}
+                style={{
                   backgroundColor: isAcademic ? 'var(--academic-bg)' : 'var(--skill-bg)',
                   color: isAcademic ? 'var(--academic)' : 'var(--skill)',
-                  borderLeft: `2px solid ${isAcademic ? 'var(--academic)' : 'var(--skill)'}`
+                  borderLeft: `2px solid ${isAcademic ? 'var(--academic)' : 'var(--skill)'}`,
                 }}
-                title={task.title}
+                title={`${task.title} · ${task.category}`}
               >
-                {task.title}
+                {/* Category dot */}
+                <span
+                  className="flex-shrink-0 w-1.5 h-1.5 rounded-full"
+                  style={{ background: isAcademic ? 'var(--academic)' : 'var(--skill)' }}
+                  aria-hidden="true"
+                />
+                <span className={`truncate ${task.is_completed ? 'line-through' : ''}`}>
+                  {task.title}
+                </span>
               </div>
             );
           })}
