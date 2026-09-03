@@ -15,6 +15,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDayOfMonth = new Date(year, month, 1).getDay();
+  const prevMonthDays = new Date(year, month, 0).getDate();
 
   const prevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -45,8 +46,13 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   
   // Padding for previous month
   for (let i = 0; i < firstDayOfMonth; i++) {
+    const dayNum = prevMonthDays - firstDayOfMonth + i + 1;
     days.push(
-      <div key={`empty-${i}`} className="p-2 border-r border-b border-[var(--border)] bg-[var(--background)]/30 min-h-[100px] md:min-h-[120px]"></div>
+      <div key={`empty-${i}`} className="p-2 min-h-[100px] md:min-h-[120px] rounded-xl border border-transparent">
+        <div className="w-7 h-7 flex items-center justify-center text-xs font-medium text-slate-400 dark:text-slate-600 opacity-40">
+          {dayNum}
+        </div>
+      </div>
     );
   }
 
@@ -64,14 +70,13 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     const isToday = todayStr === cellDateStr;
 
     days.push(
-      <div key={`day-${i}`} className="p-2 border-r border-b border-[var(--border)] min-h-[100px] md:min-h-[120px] flex flex-col gap-1 transition-colors hover:bg-[var(--foreground)]/[0.03]">
+      <div key={`day-${i}`} className="p-2 border border-slate-200/50 dark:border-white/[0.06] rounded-xl transition-all duration-200 hover:bg-slate-500/5 dark:hover:bg-white/[0.04] min-h-[100px] md:min-h-[120px] flex flex-col gap-1">
         <div
-          className={`text-sm font-semibold w-7 h-7 flex items-center justify-center rounded-full transition-colors ${
+          className={`w-7 h-7 flex items-center justify-center ${
             isToday
-              ? 'text-white'
-              : 'text-[var(--foreground-muted)] hover:text-[var(--foreground)]'
+              ? 'rounded-full font-bold text-xs bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-[0_0_14px_rgba(99,102,241,0.6)]'
+              : 'text-xs font-medium text-slate-700 dark:text-slate-300'
           }`}
-          style={isToday ? { background: 'var(--accent)' } : {}}
         >
           {i}
         </div>
@@ -113,40 +118,42 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   const paddingEnd = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
   
   for (let i = 0; i < paddingEnd; i++) {
+    const dayNum = i + 1;
     days.push(
-      <div key={`empty-end-${i}`} className="p-2 border-r border-b border-[var(--border)] bg-[var(--background)]/30 min-h-[100px] md:min-h-[120px]"></div>
+      <div key={`empty-end-${i}`} className="p-2 min-h-[100px] md:min-h-[120px] rounded-xl border border-transparent">
+        <div className="w-7 h-7 flex items-center justify-center text-xs font-medium text-slate-400 dark:text-slate-600 opacity-40">
+          {dayNum}
+        </div>
+      </div>
     );
   }
 
   return (
-    <div id="task-calendar" className="task-calendar-wrapper surface rounded-2xl p-4 md:p-6 flex flex-col w-full overflow-hidden">
+    <div id="task-calendar" className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 shadow-xl flex flex-col w-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 md:mb-6">
-        <h2 className="text-lg md:text-xl font-semibold text-[var(--foreground)] flex items-center gap-2">
-          {monthNames[month]} <span className="text-[var(--foreground-muted)] font-normal">{year}</span>
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+          {monthNames[month]} <span className="font-normal opacity-70">{year}</span>
         </h2>
-        <div className="flex items-center gap-1 md:gap-2">
-          <button onClick={today} className="px-3 py-1.5 text-xs md:text-sm rounded-lg hover:bg-[var(--foreground)]/5 text-[var(--foreground-muted)] transition-colors font-medium border border-transparent hover:border-[var(--border)]">
+        <div className="flex items-center gap-2">
+          <button onClick={today} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-300/50 dark:border-white/10 text-slate-700 dark:text-slate-200 transition-all shadow-sm">
             Today
           </button>
-          <div className="flex items-center rounded-lg border border-[var(--border)] overflow-hidden bg-[var(--background)]">
-            <button onClick={prevMonth} className="px-2 py-1.5 md:px-3 hover:bg-[var(--foreground)]/5 transition-colors text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <div className="w-px h-5 bg-[var(--border)]"></div>
-            <button onClick={nextMonth} className="px-2 py-1.5 md:px-3 hover:bg-[var(--foreground)]/5 transition-colors text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-          </div>
+          <button onClick={prevMonth} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-300/50 dark:border-white/10 text-slate-700 dark:text-slate-200 transition-all shadow-sm flex items-center justify-center" aria-label="Previous Month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button onClick={nextMonth} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 border border-slate-300/50 dark:border-white/10 text-slate-700 dark:text-slate-200 transition-all shadow-sm flex items-center justify-center" aria-label="Next Month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="flex-1 border-t border-l border-[var(--border)] rounded-lg overflow-hidden bg-[var(--background)]">
+      {/* Grid Content */}
+      <div className="flex flex-col flex-1">
         {/* Days of week */}
-        <div className="grid grid-cols-7 border-b border-[var(--border)] bg-[var(--foreground)]/5">
+        <div className="grid grid-cols-7 border-b border-slate-200/50 dark:border-white/10 pb-2 mb-2">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="py-2 text-center text-[10px] md:text-xs font-semibold text-[var(--foreground-muted)] uppercase tracking-wider border-r border-[var(--border)]">
+            <div key={day} className="py-2 text-center text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-400 uppercase">
               <span className="md:hidden">{day.charAt(0)}</span>
               <span className="hidden md:inline">{day}</span>
             </div>
@@ -154,7 +161,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
         </div>
         
         {/* Calendar cells */}
-        <div className="grid grid-cols-7 bg-[var(--background)]">
+        <div className="grid grid-cols-7 gap-1 md:gap-2">
           {days}
         </div>
       </div>
