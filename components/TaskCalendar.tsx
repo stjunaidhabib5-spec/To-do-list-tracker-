@@ -59,10 +59,10 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   // Days of current month
   const rotations = ['rotate-[-1.5deg]', 'rotate-[1.2deg]', 'rotate-[-0.8deg]', 'rotate-[1.8deg]'];
   const lightColors = [
-    'bg-amber-100/90 text-amber-950 border-amber-200/60 hover:border-amber-400/60',
-    'bg-emerald-100/90 text-emerald-950 border-emerald-200/60 hover:border-emerald-400/60',
-    'bg-sky-100/90 text-sky-950 border-sky-200/60 hover:border-sky-400/60',
-    'bg-rose-100/90 text-rose-950 border-rose-200/60 hover:border-rose-400/60'
+    'bg-emerald-100/95 border-emerald-200 text-emerald-950 hover:border-emerald-300',
+    'bg-rose-100/95 border-rose-200 text-rose-950 hover:border-rose-300',
+    'bg-amber-100/95 border-amber-200 text-amber-950 hover:border-amber-300',
+    'bg-sky-100/95 border-sky-200 text-sky-950 hover:border-sky-300'
   ];
 
   for (let i = 1; i <= daysInMonth; i++) {
@@ -82,17 +82,17 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     days.push(
       <div 
         key={`day-${i}`} 
-        className={`rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative transition-all duration-300 ease-out cursor-pointer shadow-[2px_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-md border hover:rotate-0 hover:-translate-y-2 hover:scale-[1.04] hover:shadow-2xl hover:z-30 dark:bg-cyan-950/40 dark:border-cyan-500/30 dark:text-cyan-100 dark:hover:border-cyan-400/80 dark:hover:shadow-[0_0_20px_rgba(6,182,212,0.35)] ${rotation} ${color}`}
+        className={`rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative transition-all duration-300 ease-out cursor-pointer shadow-md backdrop-blur-md border hover:rotate-0 hover:-translate-y-2 hover:scale-[1.04] hover:shadow-2xl hover:z-30 ${rotation} ${color}`}
       >
         {/* Tape strip */}
-        <div className="w-8 h-3.5 bg-white/40 backdrop-blur-sm -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-sm shadow-sm border-t border-white/20 z-10 dark:bg-cyan-400/20 dark:border-cyan-400/30" />
+        <div className="w-8 h-3.5 bg-white/60 border border-white/40 shadow-sm backdrop-blur-sm -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-sm z-10" />
 
         {/* Date number */}
         <div
           className={`font-display text-lg font-bold w-7 h-7 flex items-center justify-center ${
             isToday
               ? 'rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-[0_0_14px_rgba(99,102,241,0.6)]'
-              : 'dark:text-cyan-200/90'
+              : ''
           }`}
         >
           {i}
