@@ -140,11 +140,11 @@ body {
 [data-theme="dark"] body {
   /* Dark Mode specific background image and soft tint overlay */
   background-color: #0b0f19;
-  background-image: linear-gradient(rgba(11, 15, 25, 0.70), rgba(11, 15, 25, 0.70)), url('/bg-dark.jpg') !important;
-  background-size: cover !important;
+  background-image: linear-gradient(rgba(11, 15, 25, 0.80), rgba(11, 15, 25, 0.80)), url('/bg-dark.jpg') !important;
+  background-size: 360px auto !important;
   background-position: center !important;
   background-attachment: fixed !important;
-  background-repeat: no-repeat !important;
+  background-repeat: repeat !important;
 }
 
 /* ─── Utility Classes ───────────────────────────────────── */
