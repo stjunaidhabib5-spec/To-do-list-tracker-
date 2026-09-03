@@ -1,9 +1,16 @@
 import type { Metadata } from 'next';
+import { Teko } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import AddTaskFAB from '@/components/AddTaskFAB';
 import ToastProvider from '@/components/ToastProvider';
 import ThemeProvider from '@/components/ThemeProvider';
+
+const teko = Teko({ 
+  subsets: ['latin'], 
+  weight: ['400', '600', '700'],
+  variable: '--font-display'
+});
 
 export const metadata: Metadata = {
   title: 'TaskFlow — Personal Task & Calendar Tracker',
@@ -11,10 +18,9 @@ export const metadata: Metadata = {
     'A centralized personal task tracker for academic deadlines and skill acquisition goals. Organize, schedule, and complete tasks on a visual calendar.',
 };
 
-
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className="h-full bg-transparent">
+    <html lang="en" className={`h-full bg-transparent ${teko.variable}`}>
       <head>
         {/* Anti-flash: apply stored theme before first paint */}
         <script

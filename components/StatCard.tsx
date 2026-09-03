@@ -56,7 +56,7 @@ export default function StatCard({
       {/* Value */}
       <div>
         <p
-          className="text-3xl font-bold tracking-tight"
+          className="font-display tracking-wider uppercase text-4xl font-bold"
           style={{ color: 'var(--foreground)' }}
         >
           {value}
