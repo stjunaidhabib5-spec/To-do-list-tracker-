@@ -49,11 +49,11 @@
 /* ─── Dark Mode Tokens (via data-theme attribute) ────────── */
 [data-theme="dark"] {
   --background:        #0b0f19;
-  --surface:           #151827;
-  --surface-subtle:    #1c2035;
+  --surface:           rgba(15, 23, 42, 0.85);
+  --surface-subtle:    rgba(30, 41, 59, 0.7);
   --foreground:        #f8fafc;
   --foreground-muted:  #94a3b8;
-  --border:            rgba(255, 255, 255, 0.07);
+  --border:            rgba(51, 65, 85, 0.6);
 
   --accent:            #818cf8;
   --accent-hover:      #a5b4fc;
@@ -71,15 +71,16 @@
   --priority-low:      #34d399;
   --priority-low-bg:   rgba(52, 211, 153, 0.12);
 
-  --glass-bg:          rgba(21, 24, 39, 0.75);
-  --glass-border:      rgba(255, 255, 255, 0.08);
+  --glass-bg:          rgba(15, 23, 42, 0.75);
+  --glass-border:      rgba(51, 65, 85, 0.5);
   --glass-shadow:      0 4px 24px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0,0,0,0.3);
 
-  --card-shadow:       0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-  --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --card-shadow:       0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
 
-  --nav-bg:            rgba(13, 15, 26, 0.9);
-  --nav-border:        rgba(255, 255, 255, 0.06);
+  --nav-bg:            rgba(15, 23, 42, 0.9);
+  --nav-border:        rgba(51, 65, 85, 0.6);
+  --surface-blur:      blur(12px);
 }
 
 /* ─── Tailwind Theme Extension ──────────────────────────── */
@@ -135,12 +136,12 @@ body {
 }
 
 [data-theme="dark"] body {
-  /* Dark Mode unaffected - keep original blending gradients */
-  background-image: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 5%, transparent), transparent),
-                    radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 70%);
+  /* Dark Mode specific background image and soft tint overlay */
+  background-image: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.75)), url('/bg-dark.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   background-repeat: no-repeat;
-  background-attachment: scroll;
-  background-size: auto;
 }
 
 /* ─── Utility Classes ───────────────────────────────────── */
@@ -157,6 +158,8 @@ body {
   border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
   isolation: isolate;
+  backdrop-filter: var(--surface-blur, none);
+  -webkit-backdrop-filter: var(--surface-blur, none);
 }
 
 .badge-academic {
