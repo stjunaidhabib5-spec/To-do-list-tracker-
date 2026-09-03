@@ -57,10 +57,18 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   }
 
   // Days of current month
+  const rotations = ['rotate-[-1.5deg]', 'rotate-[1.2deg]', 'rotate-[-0.8deg]', 'rotate-[1.8deg]'];
+  const lightColors = [
+    'bg-amber-100/90 text-amber-950 border-amber-200/60 hover:border-amber-400/60',
+    'bg-emerald-100/90 text-emerald-950 border-emerald-200/60 hover:border-emerald-400/60',
+    'bg-sky-100/90 text-sky-950 border-sky-200/60 hover:border-sky-400/60',
+    'bg-rose-100/90 text-rose-950 border-rose-200/60 hover:border-rose-400/60'
+  ];
+
   for (let i = 1; i <= daysInMonth; i++) {
     const cellDateStr = toDateStr(year, month, i);
     
-    // Find tasks for this day (comparing in local timezone to prevent day jumps)
+    // Find tasks for this day
     const dayTasks = tasks.filter(t => {
       const taskObj = new Date(t.due_date);
       const taskStr = toDateStr(taskObj.getFullYear(), taskObj.getMonth(), taskObj.getDate());
@@ -68,41 +76,46 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     });
 
     const isToday = todayStr === cellDateStr;
+    const rotation = rotations[i % 4];
+    const color = lightColors[i % 4];
 
     days.push(
-      <div key={`day-${i}`} className="p-2 border border-slate-200/50 dark:border-white/[0.06] rounded-xl transition-all duration-200 hover:bg-slate-500/5 dark:hover:bg-white/[0.04] min-h-[100px] md:min-h-[120px] flex flex-col gap-1">
+      <div 
+        key={`day-${i}`} 
+        className={`rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative transition-all duration-300 ease-out cursor-pointer shadow-[2px_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-md border hover:rotate-0 hover:-translate-y-2 hover:scale-[1.04] hover:shadow-2xl hover:z-30 dark:bg-cyan-950/40 dark:border-cyan-500/30 dark:text-cyan-100 dark:hover:border-cyan-400/80 dark:hover:shadow-[0_0_20px_rgba(6,182,212,0.35)] ${rotation} ${color}`}
+      >
+        {/* Tape strip */}
+        <div className="w-8 h-3.5 bg-white/40 backdrop-blur-sm -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-sm shadow-sm border-t border-white/20 z-10 dark:bg-cyan-400/20 dark:border-cyan-400/30" />
+
+        {/* Date number */}
         <div
-          className={`w-7 h-7 flex items-center justify-center ${
+          className={`font-display text-lg font-bold w-7 h-7 flex items-center justify-center ${
             isToday
-              ? 'rounded-full font-bold text-xs bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-[0_0_14px_rgba(99,102,241,0.6)]'
-              : 'text-xs font-medium text-slate-700 dark:text-slate-300'
+              ? 'rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-[0_0_14px_rgba(99,102,241,0.6)]'
+              : 'dark:text-cyan-200/90'
           }`}
         >
           {i}
         </div>
-        <div className="flex flex-col gap-1 mt-1 overflow-y-auto max-h-[120px] no-scrollbar">
+        
+        {/* Tasks (mini sticky tags) */}
+        <div className="flex flex-col gap-1.5 mt-2 overflow-y-auto max-h-[120px] no-scrollbar">
           {dayTasks.map(task => {
             const isAcademic = task.category === 'Academic';
             return (
               <div
                 key={task.id}
-                className={`group/chip relative text-xs px-2 py-1 rounded-md truncate cursor-default transition-all duration-150 flex items-center gap-1 ${
-                  task.is_completed ? 'opacity-40' : 'opacity-90 hover:opacity-100 hover:shadow-sm'
+                className={`group/chip relative text-[10px] md:text-xs px-2 py-1 rounded-sm truncate transition-all duration-150 flex items-center gap-1.5 shadow-sm border bg-white/60 dark:bg-black/20 backdrop-blur-sm ${
+                  task.is_completed ? 'opacity-40 line-through' : 'opacity-90 hover:opacity-100 hover:-translate-y-0.5'
                 }`}
                 style={{
-                  backgroundColor: isAcademic ? 'var(--academic-bg)' : 'var(--skill-bg)',
-                  color: isAcademic ? 'var(--academic)' : 'var(--skill)',
-                  borderLeft: `2px solid ${isAcademic ? 'var(--academic)' : 'var(--skill)'}`,
+                  borderLeft: `3px solid ${isAcademic ? 'var(--academic)' : 'var(--skill)'}`,
+                  borderColor: isAcademic ? 'color-mix(in srgb, var(--academic) 30%, transparent)' : 'color-mix(in srgb, var(--skill) 30%, transparent)',
+                  borderLeftColor: isAcademic ? 'var(--academic)' : 'var(--skill)'
                 }}
                 title={`${task.title} · ${task.category}`}
               >
-                {/* Category dot */}
-                <span
-                  className="flex-shrink-0 w-1.5 h-1.5 rounded-full"
-                  style={{ background: isAcademic ? 'var(--academic)' : 'var(--skill)' }}
-                  aria-hidden="true"
-                />
-                <span className={`truncate ${task.is_completed ? 'line-through' : ''}`}>
+                <span className="truncate flex-1 text-slate-800 dark:text-slate-200 font-medium">
                   {task.title}
                 </span>
               </div>
@@ -129,7 +142,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   }
 
   return (
-    <div id="task-calendar" className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 shadow-xl flex flex-col w-full overflow-hidden">
+    <div id="task-calendar" className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 shadow-xl flex flex-col w-full">
       {/* Header */}
       <div className="flex items-center justify-between mb-4 md:mb-6">
         <h2 className="font-display tracking-wider uppercase text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
