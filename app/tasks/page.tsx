@@ -80,7 +80,7 @@ export default function TasksPage() {
 
       {/* ── Header ── */}
       <header className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
+        <h1 className="font-display tracking-wider uppercase text-4xl font-bold" style={{ color: 'var(--foreground)' }}>
           My Tasks
         </h1>
         <p className="text-sm" style={{ color: 'var(--foreground-muted)' }}>

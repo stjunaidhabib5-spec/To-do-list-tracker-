@@ -14,7 +14,7 @@ export default async function CalendarPage() {
   return (
     <div id="calendar-page" className="max-w-6xl mx-auto px-6 py-10 space-y-6 animate-fade-in-up">
       <header className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--foreground)' }}>
+        <h1 className="font-display tracking-wider uppercase text-4xl font-bold" style={{ color: 'var(--foreground)' }}>
           Calendar
         </h1>
         <p className="text-sm" style={{ color: 'var(--foreground-muted)' }}>

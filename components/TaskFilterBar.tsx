@@ -78,7 +78,7 @@ export default function TaskFilterBar({
             {FILTER_ICONS[value]}
             {label}
             <span
-              className={`text-xs px-1.5 py-0.5 rounded-full font-bold tabular-nums ${
+              className={`font-display tracking-wide text-sm px-1.5 py-0.5 rounded-full font-bold tabular-nums ${
                 isActive
                   ? 'bg-white/20 text-white'
                   : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
