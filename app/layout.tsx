@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full bg-transparent">
       <head>
         {/* Anti-flash: apply stored theme before first paint */}
         <script
@@ -23,11 +23,11 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col antialiased">
+      <body className="min-h-full flex flex-col antialiased bg-transparent">
         <ThemeProvider>
           <ToastProvider>
             <Navbar />
-            <main id="main-content" className="flex-1">
+            <main id="main-content" className="flex-1 bg-transparent">
               {children}
             </main>
             <AddTaskFAB />

@@ -127,31 +127,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  /* Theme blending gradients */
+  /* Light mode background with texture and wash */
+  background-image: linear-gradient(rgba(248, 250, 252, 0.88), rgba(248, 250, 252, 0.88)), url('/bg-light.png');
+  background-repeat: repeat;
+  background-attachment: fixed;
+  background-size: 380px;
+}
+
+[data-theme="dark"] body {
+  /* Dark Mode unaffected - keep original blending gradients */
   background-image: linear-gradient(to bottom right, color-mix(in srgb, var(--accent) 5%, transparent), transparent),
                     radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 70%);
-}
-
-/* ─── Seamless Background Pattern ──────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: url('/bg-pattern.png');
-  background-repeat: repeat;
-  background-size: 320px 320px;
-  mix-blend-mode: multiply;
-  filter: saturate(0) brightness(0.1);
-  opacity: 0.12;
-  transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
-[data-theme="dark"] body::before {
-  mix-blend-mode: screen;
-  filter: brightness(2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  opacity: 0.15;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: auto;
 }
 
 /* ─── Utility Classes ───────────────────────────────────── */
