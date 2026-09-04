@@ -13,6 +13,33 @@ const getNoteColor = (dayIndex: number) => {
   return colors[dayIndex % 4];
 };
 
+const isSameCalendarDay = (taskDateVal: any, cellDate: Date) => {
+  if (!taskDateVal) return false;
+  
+  const taskDate = new Date(taskDateVal);
+  if (isNaN(taskDate.getTime())) return false;
+
+  // 1. Local Date Match (same year, month, day in user's local timezone)
+  const matchLocal = 
+    taskDate.getFullYear() === cellDate.getFullYear() &&
+    taskDate.getMonth() === cellDate.getMonth() &&
+    taskDate.getDate() === cellDate.getDate();
+
+  // 2. Formatted String Match (YYYY-MM-DD)
+  const formatLocal = (d: Date) => 
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  
+  const matchFormatted = formatLocal(taskDate) === formatLocal(cellDate);
+
+  // 3. Raw ISO string prefix match (in case it is stored as YYYY-MM-DD...)
+  let matchRaw = false;
+  if (typeof taskDateVal === 'string') {
+    matchRaw = taskDateVal.startsWith(formatLocal(cellDate));
+  }
+
+  return matchLocal || matchFormatted || matchRaw;
+};
+
 interface TaskCalendarProps {
   tasks: Task[];
 }
@@ -82,11 +109,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   for (let i = 1; i <= daysInMonth; i++) {
     const cellDateStr = toDateStr(year, month, i);
     
+    const cellDateObj = new Date(year, month, i);
+    
     // Find tasks for this day
     const dayTasks = tasks.filter(t => {
-      if (!t.due_date) return false;
-      const taskDateStr = String(t.due_date).split('T')[0];
-      return taskDateStr === cellDateStr;
+      const dateVal = t.due_date || (t as any).dueDate;
+      return isSameCalendarDay(dateVal, cellDateObj);
     });
 
     const isToday = todayStr === cellDateStr;
