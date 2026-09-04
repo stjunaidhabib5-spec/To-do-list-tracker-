@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Teko } from 'next/font/google';
+import { Teko, Caveat } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import AddTaskFAB from '@/components/AddTaskFAB';
@@ -12,6 +12,11 @@ const teko = Teko({
   variable: '--font-display'
 });
 
+const caveat = Caveat({ 
+  subsets: ['latin'], 
+  variable: '--font-handwriting' 
+});
+
 export const metadata: Metadata = {
   title: 'TaskFlow — Personal Task & Calendar Tracker',
   description:
@@ -20,7 +25,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`h-full bg-transparent ${teko.variable}`}>
+    <html lang="en" className={`h-full bg-transparent ${teko.variable} ${caveat.variable}`}>
       <head>
         {/* Anti-flash: apply stored theme before first paint */}
         <script

@@ -95,6 +95,7 @@
   --color-skill:          var(--skill);
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: var(--font-display), sans-serif;
+  --font-handwriting: var(--font-handwriting), cursive;
 }
 
 /* ─── Base Styles ───────────────────────────────────────── */

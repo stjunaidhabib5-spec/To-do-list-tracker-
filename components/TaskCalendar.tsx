@@ -70,9 +70,9 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     
     // Find tasks for this day
     const dayTasks = tasks.filter(t => {
-      const taskObj = new Date(t.due_date);
-      const taskStr = toDateStr(taskObj.getFullYear(), taskObj.getMonth(), taskObj.getDate());
-      return taskStr === cellDateStr;
+      if (!t.due_date) return false;
+      const taskDateStr = String(t.due_date).split('T')[0];
+      return taskDateStr === cellDateStr;
     });
 
     const isToday = todayStr === cellDateStr;
@@ -98,29 +98,23 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {i}
         </div>
         
-        {/* Tasks (mini sticky tags) */}
-        <div className="flex flex-col gap-1.5 mt-2 overflow-y-auto max-h-[120px] no-scrollbar">
-          {dayTasks.map(task => {
-            const isAcademic = task.category === 'Academic';
-            return (
-              <div
-                key={task.id}
-                className={`group/chip relative text-[10px] md:text-xs px-2 py-1 rounded-sm truncate transition-all duration-150 flex items-center gap-1.5 shadow-sm border bg-white/60 dark:bg-black/20 backdrop-blur-sm ${
-                  task.is_completed ? 'opacity-40 line-through' : 'opacity-90 hover:opacity-100 hover:-translate-y-0.5'
-                }`}
-                style={{
-                  borderLeft: `3px solid ${isAcademic ? 'var(--academic)' : 'var(--skill)'}`,
-                  borderColor: isAcademic ? 'color-mix(in srgb, var(--academic) 30%, transparent)' : 'color-mix(in srgb, var(--skill) 30%, transparent)',
-                  borderLeftColor: isAcademic ? 'var(--academic)' : 'var(--skill)'
-                }}
-                title={`${task.title} · ${task.category}`}
-              >
-                <span className="truncate flex-1 text-slate-800 dark:text-slate-200 font-medium">
-                  {task.title}
-                </span>
-              </div>
-            );
-          })}
+        {/* Tasks (handwriting style) */}
+        <div className="mt-1 flex flex-col gap-0.5 w-full text-left">
+          {dayTasks.slice(0, 3).map(task => (
+            <div 
+              key={task.id}
+              title={task.title}
+              className={`font-handwriting text-[15px] leading-tight text-slate-900 font-semibold tracking-wide truncate select-none pl-1 hover:text-indigo-900 transition-colors ${task.is_completed ? 'line-through opacity-60' : ''}`}
+              style={{ transform: 'rotate(-1.5deg)' }}
+            >
+              • {task.title}
+            </div>
+          ))}
+          {dayTasks.length > 3 && (
+            <div className="font-handwriting text-[14px] font-semibold text-slate-700/80 mt-0.5 text-center" style={{ transform: 'rotate(-1.5deg)' }}>
+              +{dayTasks.length - 3} more
+            </div>
+          )}
         </div>
       </div>
     );
