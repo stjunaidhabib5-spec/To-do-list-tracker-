@@ -91,7 +91,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
             setSelectedDayTasks({ year, month, date: i, tasks: dayTasks });
           }
         }}
-        className={`rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative transition-all duration-300 ease-out cursor-pointer shadow-md backdrop-blur-md border hover:rotate-0 hover:-translate-y-2 hover:scale-[1.04] hover:shadow-2xl hover:z-30 ${rotation} ${color}`}
+        className={`sticky-paper rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative cursor-pointer shadow-md backdrop-blur-md border ${rotation} ${color}`}
       >
         {/* Tape strip */}
         <div className="w-8 h-3.5 bg-white/60 border border-white/40 shadow-sm backdrop-blur-sm -top-1.5 left-1/2 -translate-x-1/2 absolute rounded-sm z-10" />
@@ -150,6 +150,27 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
 
   return (
     <div id="task-calendar" className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 shadow-xl flex flex-col w-full">
+      <style dangerouslySetInnerHTML={{__html: `
+        .sticky-wrapper {
+          perspective: 800px !important;
+          overflow: visible !important;
+        }
+        .sticky-paper {
+          transform-origin: top center !important;
+          transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease !important;
+          backface-visibility: hidden;
+          will-change: transform, box-shadow;
+        }
+        .sticky-paper:hover {
+          /* Flaps bottom up like real loose paper pinned at the top */
+          transform: perspective(800px) rotateX(24deg) translateY(-6px) scale(1.04) !important;
+          box-shadow: 0 22px 28px -6px rgba(0, 0, 0, 0.28), 0 10px 12px -4px rgba(0, 0, 0, 0.12) !important;
+          z-index: 50 !important;
+        }
+        .dark .sticky-paper:hover {
+          box-shadow: 0 24px 32px -6px rgba(0, 0, 0, 0.75), 0 0 16px rgba(6, 182, 212, 0.25) !important;
+        }
+      `}} />
       {/* Header */}
       <div className="flex items-center justify-between mb-4 md:mb-6">
         <h2 className="font-display tracking-wider uppercase text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -181,7 +202,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
         </div>
         
         {/* Calendar cells */}
-        <div className="grid grid-cols-7 gap-1 md:gap-2">
+        <div className="sticky-wrapper grid grid-cols-7 gap-1 md:gap-2">
           {days}
         </div>
       </div>
@@ -191,12 +212,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
       {/* Day Tasks Modal */}
       {selectedDayTasks && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 transition-opacity animate-fade-in-up"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 transition-opacity animate-fade-in-up"
           style={{ animationDuration: '0.2s' }}
           onClick={() => setSelectedDayTasks(null)}
         >
           <div 
-            className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-6 max-w-md w-full relative z-10"
+            className="relative w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-white/10 p-6 z-10 text-slate-900 dark:text-slate-100"
             onClick={e => e.stopPropagation()}
           >
             <button 
@@ -219,7 +240,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                 <div 
                   key={task.id}
                   onClick={() => setSelectedTaskDetail(task)}
-                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/20 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors shadow-sm"
+                  className="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-white/5 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer transition-colors shadow-sm hover:bg-slate-200/80 dark:hover:bg-slate-700/80"
                 >
                   <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${task.is_completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
                     {task.is_completed && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>}
@@ -242,12 +263,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
       {/* Task Detail Modal */}
       {selectedTaskDetail && (
         <div 
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 transition-opacity animate-fade-in-up"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/30 transition-opacity animate-fade-in-up"
           style={{ animationDuration: '0.2s' }}
           onClick={() => setSelectedTaskDetail(null)}
         >
           <div 
-            className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-6 max-w-md w-full relative z-10"
+            className="relative w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-white/10 p-6 z-10 text-slate-900 dark:text-slate-100"
             onClick={e => e.stopPropagation()}
           >
             <button 
