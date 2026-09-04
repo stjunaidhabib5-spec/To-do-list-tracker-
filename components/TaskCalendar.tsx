@@ -172,18 +172,30 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {dayTasks.slice(0, 3).map(task => (
             <div 
               key={task.id}
-              onClick={(e) => { e.stopPropagation(); setSelectedTaskDetail(task); }}
-              className="font-handwriting text-sm leading-tight text-slate-800 dark:text-slate-900 font-semibold truncate cursor-pointer hover:text-indigo-950"
-              style={{ transform: 'rotate(-1.5deg)' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedTaskDetail(task);
+              }}
               title={task.title}
+              className="font-handwriting text-sm leading-tight text-slate-800 dark:text-slate-900 font-semibold truncate cursor-pointer hover:text-indigo-900 select-none"
+              style={{ transform: 'rotate(-1.5deg)' }}
             >
               • {task.title}
             </div>
           ))}
+
           {dayTasks.length > 3 && (
-            <span className="font-handwriting text-xs font-bold text-slate-600" style={{ transform: 'rotate(-1.5deg)' }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedDayTasks({ year, month, date: i, tasks: dayTasks });
+              }}
+              className="font-handwriting text-xs font-bold text-slate-600 hover:text-slate-950 dark:text-slate-700 dark:hover:text-black text-left pt-0.5 cursor-pointer no-underline transition-colors select-none"
+              style={{ transform: 'rotate(-1.5deg)' }}
+            >
               +{dayTasks.length - 3} more
-            </span>
+            </button>
           )}
         </div>
       </div>
