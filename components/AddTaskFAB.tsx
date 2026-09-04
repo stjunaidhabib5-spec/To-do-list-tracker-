@@ -19,7 +19,10 @@ export default function AddTaskFAB() {
   async function handleSubmit(task: NewTask) {
     setIsSaving(true);
     try {
-      await createTask(task);
+      const createdTask = await createTask(task);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('tasks-updated', { detail: createdTask }));
+      }
       close();
       showToast('Task added! ✨', 'success');
       // Re-run Server Components on the current page so the task list refreshes

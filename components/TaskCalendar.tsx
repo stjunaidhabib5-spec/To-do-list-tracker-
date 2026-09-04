@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Task } from '@/lib/types';
 
 const getNoteColor = (dayIndex: number) => {
@@ -45,7 +45,29 @@ interface TaskCalendarProps {
 }
 
 export default function TaskCalendar({ tasks }: TaskCalendarProps) {
+  const [localTasks, setLocalTasks] = useState<Task[]>(tasks);
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Sync localTasks if the tasks prop updates from server
+  useEffect(() => {
+    setLocalTasks(tasks);
+  }, [tasks]);
+
+  useEffect(() => {
+    const handleTasksUpdated = (event: any) => {
+      if (event.detail) {
+        setLocalTasks(prev => {
+          const exists = prev.some(t => t.id === event.detail.id);
+          return exists ? prev.map(t => t.id === event.detail.id ? event.detail : t) : [...prev, event.detail];
+        });
+      }
+    };
+
+    window.addEventListener('tasks-updated', handleTasksUpdated);
+    return () => {
+      window.removeEventListener('tasks-updated', handleTasksUpdated);
+    };
+  }, []);
   
   // Modals state
   const [selectedDayTasks, setSelectedDayTasks] = useState<{ year: number, month: number, date: number, tasks: Task[] } | null>(null);
@@ -112,7 +134,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     const cellDateObj = new Date(year, month, i);
     
     // Find tasks for this day
-    const dayTasks = tasks.filter(t => {
+    const dayTasks = localTasks.filter(t => {
       const dateVal = t.due_date || (t as any).dueDate;
       return isSameCalendarDay(dateVal, cellDateObj);
     });
@@ -150,21 +172,18 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {dayTasks.slice(0, 3).map(task => (
             <div 
               key={task.id}
-              title={task.title}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedTaskDetail(task);
-              }}
-              className={`font-handwriting text-[15px] leading-tight text-slate-900 font-semibold tracking-wide truncate select-none pl-1 hover:text-indigo-900 transition-colors ${task.is_completed ? 'line-through opacity-60' : ''}`}
+              onClick={(e) => { e.stopPropagation(); setSelectedTaskDetail(task); }}
+              className="font-handwriting text-sm leading-tight text-slate-800 dark:text-slate-900 font-semibold truncate cursor-pointer hover:text-indigo-950"
               style={{ transform: 'rotate(-1.5deg)' }}
+              title={task.title}
             >
               • {task.title}
             </div>
           ))}
           {dayTasks.length > 3 && (
-            <div className="font-handwriting text-[14px] font-semibold text-slate-700/80 mt-0.5 text-center" style={{ transform: 'rotate(-1.5deg)' }}>
+            <span className="font-handwriting text-xs font-bold text-slate-600" style={{ transform: 'rotate(-1.5deg)' }}>
               +{dayTasks.length - 3} more
-            </div>
+            </span>
           )}
         </div>
       </div>
