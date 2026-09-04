@@ -246,8 +246,8 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                 </button>
 
                 {/* Header */}
-                <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{formattedDate}</h3>
-                <p className="text-xs font-semibold text-slate-600 mt-0.5">
+                <h3 className="font-handwriting text-3xl font-bold text-slate-900 tracking-wide">{formattedDate}</h3>
+                <p className="font-handwriting text-lg font-medium text-slate-700 mt-0.5">
                   {selectedDayTasks.tasks.length} {selectedDayTasks.tasks.length === 1 ? 'Task' : 'Tasks'}
                 </p>
 
@@ -257,21 +257,15 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                     <div 
                       key={task.id}
                       onClick={() => {
-                        // Don't close the tasks list if you just want to open details, 
-                        // wait, if we open details, it renders on top.
-                        // Or we can close day tasks and open details. 
-                        // The user didn't specify, but I will just open task detail.
-                        // Actually, I won't close it so it behaves like a stack if needed, or close it. 
-                        // I'll leave the previous behavior which was NOT closing Day Tasks Modal.
                         setSelectedTaskDetail(task);
                       }}
                       className="cursor-pointer bg-white/60 hover:bg-white/85 border border-black/5 rounded-xl p-3 flex items-center justify-between shadow-xs transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <input type="checkbox" checked={task.is_completed} readOnly className="rounded-full text-emerald-600 focus:ring-0" />
-                        <span className={`font-medium text-slate-900 ${task.is_completed ? 'line-through text-slate-500' : ''}`}>{task.title}</span>
+                        <span className={`font-handwriting text-xl font-semibold text-slate-900 ${task.is_completed ? 'line-through opacity-70 text-slate-600' : ''}`}>{task.title}</span>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">{task.category}</span>
+                      <span className="font-handwriting text-xs font-bold px-2.5 py-0.5 rounded-md bg-black/10 text-slate-800 tracking-wider">{task.category}</span>
                     </div>
                   ))}
                 </div>
@@ -309,14 +303,14 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                 </button>
                 
                 <div className="mb-4 pr-8">
-                  <h3 className="text-2xl font-bold text-slate-900 leading-tight">
+                  <h3 className="font-handwriting text-4xl font-bold text-slate-900 leading-tight">
                     {selectedTaskDetail.title}
                   </h3>
                 </div>
                 
                 <div className="space-y-4 mb-6">
-                  <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  <div className="font-handwriting text-lg font-medium text-slate-700 flex items-center gap-1.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-700"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                     <span>
                       {selectedTaskDetail.due_date 
                         ? new Date(String(selectedTaskDetail.due_date).split('T')[0] + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
@@ -324,18 +318,21 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                     </span>
                   </div>
                   
-                  <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-handwriting text-sm font-bold px-2.5 py-0.5 rounded-md bg-black/10 text-slate-800 tracking-wide">
                       {selectedTaskDetail.category}
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">
+                    <span className="font-handwriting text-sm font-bold px-2.5 py-0.5 rounded-md bg-black/10 text-slate-800 tracking-wide">
                       {selectedTaskDetail.is_completed ? 'Completed' : 'Pending'}
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-white/65 border border-black/5 rounded-xl p-4 text-slate-800 font-handwriting text-lg leading-relaxed shadow-inner min-h-[120px]">
-                  {selectedTaskDetail.description || 'No description provided.'}
+                <div className="mt-4">
+                  <h4 className="font-handwriting text-base font-bold text-slate-700 uppercase tracking-wider mb-2">Description</h4>
+                  <div className="bg-white/65 border border-black/5 rounded-xl p-4 font-handwriting text-xl text-slate-800 leading-relaxed shadow-inner min-h-[120px]">
+                    {selectedTaskDetail.description || 'No description provided.'}
+                  </div>
                 </div>
                 
               </div>
