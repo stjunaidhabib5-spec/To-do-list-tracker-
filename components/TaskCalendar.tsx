@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import type { Task } from '@/lib/types';
 
+const getNoteColor = (dayIndex: number) => {
+  const colors = [
+    { bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-950' }, // 0
+    { bg: 'bg-rose-100', border: 'border-rose-300', text: 'text-rose-950' }, // 1
+    { bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-950' }, // 2
+    { bg: 'bg-sky-100', border: 'border-sky-300', text: 'text-sky-950' }, // 3
+  ];
+  return colors[dayIndex % 4];
+};
+
 interface TaskCalendarProps {
   tasks: Task[];
 }
@@ -212,106 +222,125 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
       {/* Day Tasks Modal */}
       {selectedDayTasks && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 transition-opacity animate-fade-in-up"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/35 transition-opacity animate-fade-in-up"
           style={{ animationDuration: '0.2s' }}
           onClick={() => setSelectedDayTasks(null)}
         >
-          <div 
-            className="relative w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-white/10 p-6 z-10 text-slate-900 dark:text-slate-100"
-            onClick={e => e.stopPropagation()}
-          >
-            <button 
-              onClick={() => setSelectedDayTasks(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-            <div className="mb-6">
-              <h3 className="font-display tracking-wider uppercase text-2xl font-bold text-slate-900 dark:text-white">
-                {new Date(selectedDayTasks.year, selectedDayTasks.month, selectedDayTasks.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-              </h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-                {selectedDayTasks.tasks.length} {selectedDayTasks.tasks.length === 1 ? 'Task' : 'Tasks'}
-              </p>
-            </div>
-            
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
-              {selectedDayTasks.tasks.map(task => (
-                <div 
-                  key={task.id}
-                  onClick={() => setSelectedTaskDetail(task)}
-                  className="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-white/5 rounded-xl p-3 flex items-center justify-between gap-3 cursor-pointer transition-colors shadow-sm hover:bg-slate-200/80 dark:hover:bg-slate-700/80"
+          {(() => {
+            const noteColor = getNoteColor(selectedDayTasks.date);
+            const formattedDate = new Date(selectedDayTasks.year, selectedDayTasks.month, selectedDayTasks.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            return (
+              <div 
+                className={`relative w-full max-w-md ${noteColor.bg} ${noteColor.border} border-2 rounded-2xl shadow-2xl p-6 select-none transition-all`}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Frosted Scotch Tape at Top */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-white/70 backdrop-blur-xs border border-white/50 shadow-xs rounded-xs pointer-events-none rotate-[-0.5deg]" />
+                
+                {/* Close Button */}
+                <button 
+                  onClick={() => setSelectedDayTasks(null)} 
+                  className="absolute top-4 right-4 text-slate-600 hover:text-slate-900 text-xl font-bold"
                 >
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${task.is_completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
-                    {task.is_completed && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium truncate ${task.is_completed ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-200'}`}>
-                      {task.title}
-                    </p>
-                  </div>
-                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full whitespace-nowrap ${task.category === 'Academic' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
-                    {task.category}
-                  </span>
+                  ✕
+                </button>
+
+                {/* Header */}
+                <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{formattedDate}</h3>
+                <p className="text-xs font-semibold text-slate-600 mt-0.5">
+                  {selectedDayTasks.tasks.length} {selectedDayTasks.tasks.length === 1 ? 'Task' : 'Tasks'}
+                </p>
+
+                {/* Task Rows */}
+                <div className="mt-4 flex flex-col gap-2.5 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+                  {selectedDayTasks.tasks.map(task => (
+                    <div 
+                      key={task.id}
+                      onClick={() => {
+                        // Don't close the tasks list if you just want to open details, 
+                        // wait, if we open details, it renders on top.
+                        // Or we can close day tasks and open details. 
+                        // The user didn't specify, but I will just open task detail.
+                        // Actually, I won't close it so it behaves like a stack if needed, or close it. 
+                        // I'll leave the previous behavior which was NOT closing Day Tasks Modal.
+                        setSelectedTaskDetail(task);
+                      }}
+                      className="cursor-pointer bg-white/60 hover:bg-white/85 border border-black/5 rounded-xl p-3 flex items-center justify-between shadow-xs transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <input type="checkbox" checked={task.is_completed} readOnly className="rounded-full text-emerald-600 focus:ring-0" />
+                        <span className={`font-medium text-slate-900 ${task.is_completed ? 'line-through text-slate-500' : ''}`}>{task.title}</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">{task.category}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 
       {/* Task Detail Modal */}
       {selectedTaskDetail && (
         <div 
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/30 transition-opacity animate-fade-in-up"
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/35 transition-opacity animate-fade-in-up"
           style={{ animationDuration: '0.2s' }}
           onClick={() => setSelectedTaskDetail(null)}
         >
-          <div 
-            className="relative w-full max-w-md bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200/80 dark:border-white/10 p-6 z-10 text-slate-900 dark:text-slate-100"
-            onClick={e => e.stopPropagation()}
-          >
-            <button 
-              onClick={() => setSelectedTaskDetail(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
+          {(() => {
+            const dayStr = selectedTaskDetail.due_date ? String(selectedTaskDetail.due_date).split('T')[0].split('-')[2] : '1';
+            const dayIndex = parseInt(dayStr, 10) || 1;
+            const noteColor = getNoteColor(dayIndex);
             
-            <div className="mb-4 pr-8">
-              <span className={`inline-block mb-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${selectedTaskDetail.category === 'Academic' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
-                {selectedTaskDetail.category}
-              </span>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">
-                {selectedTaskDetail.title}
-              </h3>
-            </div>
-            
-            <div className="space-y-4 mb-6">
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                <span>
-                  {selectedTaskDetail.due_date 
-                    ? new Date(String(selectedTaskDetail.due_date).split('T')[0] + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-                    : 'No Date'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${selectedTaskDetail.is_completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-500'}`}>
-                    {selectedTaskDetail.is_completed && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>}
+            return (
+              <div 
+                className={`relative w-full max-w-md ${noteColor.bg} ${noteColor.border} border-2 rounded-2xl shadow-2xl p-6 select-none transition-all`}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Frosted Scotch Tape at Top */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-white/70 backdrop-blur-xs border border-white/50 shadow-xs rounded-xs pointer-events-none rotate-[-0.5deg]" />
+                
+                <button 
+                  onClick={() => setSelectedTaskDetail(null)}
+                  className="absolute top-4 right-4 text-slate-600 hover:text-slate-900 text-xl font-bold"
+                >
+                  ✕
+                </button>
+                
+                <div className="mb-4 pr-8">
+                  <h3 className="text-2xl font-bold text-slate-900 leading-tight">
+                    {selectedTaskDetail.title}
+                  </h3>
                 </div>
-                <span>{selectedTaskDetail.is_completed ? 'Completed' : 'Pending'}</span>
-              </div>
-            </div>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                    <span>
+                      {selectedTaskDetail.due_date 
+                        ? new Date(String(selectedTaskDetail.due_date).split('T')[0] + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                        : 'No Date'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">
+                      {selectedTaskDetail.category}
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/10 text-slate-800 uppercase tracking-wider">
+                      {selectedTaskDetail.is_completed ? 'Completed' : 'Pending'}
+                    </span>
+                  </div>
+                </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-150 dark:border-white/5">
-              <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Description</h4>
-              <p className={`text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap ${!selectedTaskDetail.description ? 'italic opacity-60' : ''}`}>
-                {selectedTaskDetail.description || 'No description provided.'}
-              </p>
-            </div>
-            
-          </div>
+                <div className="bg-white/65 border border-black/5 rounded-xl p-4 text-slate-800 font-handwriting text-lg leading-relaxed shadow-inner min-h-[120px]">
+                  {selectedTaskDetail.description || 'No description provided.'}
+                </div>
+                
+              </div>
+            );
+          })()}
         </div>
       )}
 
