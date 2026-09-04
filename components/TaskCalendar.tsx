@@ -169,10 +169,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
         
         {/* Tasks (handwriting style) */}
         <div className="mt-1 flex flex-col gap-0.5 w-full text-left">
+          {/* 1. Dynamic task count: show first 3 tasks */}
           {dayTasks.slice(0, 3).map(task => (
             <div 
               key={task.id}
               onClick={(e) => {
+                // 3. Clicking a single task opens Task Detail modal
                 e.stopPropagation();
                 setSelectedTaskDetail(task);
               }}
@@ -184,10 +186,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
             </div>
           ))}
 
+          {/* If tasks > 3 show +X more without any underline */}
           {dayTasks.length > 3 && (
             <button
               type="button"
               onClick={(e) => {
+                // 2. Clicking "+X more" opens Day View modal with all tasks for that day
                 e.stopPropagation();
                 setSelectedDayTasks({ year, month, date: i, tasks: dayTasks });
               }}
