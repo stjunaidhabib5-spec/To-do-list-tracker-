@@ -9,6 +9,10 @@ interface TaskCalendarProps {
 
 export default function TaskCalendar({ tasks }: TaskCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  
+  // Modals state
+  const [selectedDayTasks, setSelectedDayTasks] = useState<{ year: number, month: number, date: number, tasks: Task[] } | null>(null);
+  const [selectedTaskDetail, setSelectedTaskDetail] = useState<Task | null>(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -82,6 +86,11 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
     days.push(
       <div 
         key={`day-${i}`} 
+        onClick={() => {
+          if (dayTasks.length > 0) {
+            setSelectedDayTasks({ year, month, date: i, tasks: dayTasks });
+          }
+        }}
         className={`rounded-xl p-3 min-h-[95px] md:min-h-[120px] flex flex-col justify-start relative transition-all duration-300 ease-out cursor-pointer shadow-md backdrop-blur-md border hover:rotate-0 hover:-translate-y-2 hover:scale-[1.04] hover:shadow-2xl hover:z-30 ${rotation} ${color}`}
       >
         {/* Tape strip */}
@@ -104,6 +113,10 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
             <div 
               key={task.id}
               title={task.title}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedTaskDetail(task);
+              }}
               className={`font-handwriting text-[15px] leading-tight text-slate-900 font-semibold tracking-wide truncate select-none pl-1 hover:text-indigo-900 transition-colors ${task.is_completed ? 'line-through opacity-60' : ''}`}
               style={{ transform: 'rotate(-1.5deg)' }}
             >
@@ -172,6 +185,115 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {days}
         </div>
       </div>
+
+      {/* Modals */}
+      
+      {/* Day Tasks Modal */}
+      {selectedDayTasks && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-fade-in-up"
+          style={{ animationDuration: '0.2s' }}
+          onClick={() => setSelectedDayTasks(null)}
+        >
+          <div 
+            className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl max-w-md w-full p-6 relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setSelectedDayTasks(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div className="mb-6">
+              <h3 className="font-display tracking-wider uppercase text-2xl font-bold text-slate-900 dark:text-white">
+                {new Date(selectedDayTasks.year, selectedDayTasks.month, selectedDayTasks.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
+                {selectedDayTasks.tasks.length} {selectedDayTasks.tasks.length === 1 ? 'Task' : 'Tasks'}
+              </p>
+            </div>
+            
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1 no-scrollbar">
+              {selectedDayTasks.tasks.map(task => (
+                <div 
+                  key={task.id}
+                  onClick={() => setSelectedTaskDetail(task)}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white/50 dark:bg-slate-800/20 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors shadow-sm"
+                >
+                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${task.is_completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
+                    {task.is_completed && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium truncate ${task.is_completed ? 'text-slate-400 line-through' : 'text-slate-800 dark:text-slate-200'}`}>
+                      {task.title}
+                    </p>
+                  </div>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full whitespace-nowrap ${task.category === 'Academic' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
+                    {task.category}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Task Detail Modal */}
+      {selectedTaskDetail && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-fade-in-up"
+          style={{ animationDuration: '0.2s' }}
+          onClick={() => setSelectedTaskDetail(null)}
+        >
+          <div 
+            className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl max-w-md w-full p-6 relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setSelectedTaskDetail(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            
+            <div className="mb-4 pr-8">
+              <span className={`inline-block mb-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${selectedTaskDetail.category === 'Academic' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'}`}>
+                {selectedTaskDetail.category}
+              </span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">
+                {selectedTaskDetail.title}
+              </h3>
+            </div>
+            
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-2.5 text-sm text-slate-600 dark:text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                <span className="font-medium">
+                  {selectedTaskDetail.due_date 
+                    ? new Date(String(selectedTaskDetail.due_date).split('T')[0] + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+                    : 'No Date'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm text-slate-600 dark:text-slate-300">
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${selectedTaskDetail.is_completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-500'}`}>
+                    {selectedTaskDetail.is_completed && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>}
+                </div>
+                <span className="font-medium">{selectedTaskDetail.is_completed ? 'Completed' : 'Pending'}</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-100 dark:border-slate-700/50 shadow-sm">
+              <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Description</h4>
+              <p className={`text-sm whitespace-pre-wrap leading-relaxed ${selectedTaskDetail.description ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500 italic'}`}>
+                {selectedTaskDetail.description || 'No description provided.'}
+              </p>
+            </div>
+            
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
