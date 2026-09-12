@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { createClient } from '@/utils/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
 const navLinks = [
   { href: '/',          label: 'Dashboard', id: 'nav-dashboard' },
@@ -12,6 +15,34 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router   = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+
+  // ── Fetch the current session user client-side ───────────────────────────
+  useEffect(() => {
+    const supabase = createClient();
+
+    // Get the current user on mount
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    // Subscribe to auth state changes (login / logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // ── Sign out handler ──────────────────────────────────────────────────────
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
+
+  // ── Avatar: first letter of email, uppercased ─────────────────────────────
+  const avatarLetter = user?.email?.[0]?.toUpperCase() ?? '?';
 
   return (
     <header
@@ -88,8 +119,50 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* ── Theme Toggle ── */}
-        <ThemeToggle />
+        {/* ── Right Section: Theme Toggle + User Avatar + Sign Out ── */}
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+
+          {user && (
+            <>
+              {/* Avatar circle — shows first letter of email */}
+              <div
+                id="nav-user-avatar"
+                title={user.email ?? ''}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white select-none"
+                style={{
+                  background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%)',
+                  boxShadow: '0 2px 8px rgba(99,102,241,0.35)',
+                }}
+                aria-label={`Signed in as ${user.email}`}
+              >
+                {avatarLetter}
+              </div>
+
+              {/* Sign Out button */}
+              <button
+                id="nav-sign-out"
+                onClick={handleSignOut}
+                className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer"
+                style={{
+                  color: 'var(--foreground-muted)',
+                  border: '1px solid var(--border)',
+                  background: 'transparent',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--surface-subtle)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--foreground)';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--foreground-muted)';
+                }}
+              >
+                Sign Out
+              </button>
+            </>
+          )}
+        </div>
       </nav>
     </header>
   );

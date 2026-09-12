@@ -5,7 +5,7 @@ import TaskCard from '@/components/TaskCard';
 import TaskCardSkeleton from '@/components/TaskCardSkeleton';
 import TaskFilterBar from '@/components/TaskFilterBar';
 import { useToast } from '@/components/ToastProvider';
-import { fetchAllTasks, toggleTaskCompletion, deleteTask } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import type { Task, Category } from '@/lib/types';
 
 type FilterValue = 'All' | Category;
@@ -20,14 +20,22 @@ export default function TasksPage() {
   useEffect(() => {
     let cancelled = false;
     setIsLoading(true);
-    fetchAllTasks()
-      .then(data => { if (!cancelled) { setTasks(data); setIsLoading(false); } })
-      .catch(err  => {
-        if (!cancelled) {
-          setIsLoading(false);
-          showToast(`Failed to load tasks: ${(err as Error).message}`, 'error');
+
+    const supabase = createClient();
+    supabase
+      .from('tasks')
+      .select('*')
+      .order('due_date', { ascending: true })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          showToast(`Failed to load tasks: ${error.message}`, 'error');
+        } else {
+          setTasks((data ?? []) as Task[]);
         }
+        setIsLoading(false);
       });
+
     return () => { cancelled = true; };
     // showToast is stable (useCallback) so this is safe
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +47,12 @@ export default function TasksPage() {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, is_completed: !current } : t));
     try {
       // 2. Persist to Supabase in background
-      await toggleTaskCompletion(id, !current);
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('tasks')
+        .update({ is_completed: !current })
+        .eq('id', id);
+      if (error) throw new Error(error.message);
     } catch (err) {
       // 3. Roll back on failure
       setTasks(prev => prev.map(t => t.id === id ? { ...t, is_completed: current } : t));
@@ -54,11 +67,13 @@ export default function TasksPage() {
     setTasks(prev => prev.filter(t => t.id !== id));
     try {
       // 2. Delete from Supabase in background
-      await deleteTask(id);
+      const supabase = createClient();
+      const { error } = await supabase.from('tasks').delete().eq('id', id);
+      if (error) throw new Error(error.message);
     } catch (err) {
       // 3. Restore on failure
       if (removed) setTasks(prev => [...prev, removed].sort(
-        (a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
+        (a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
       ));
       showToast(`Failed to delete task: ${(err as Error).message}`, 'error');
     }

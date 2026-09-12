@@ -1,11 +1,18 @@
 import StatCard from '@/components/StatCard';
 import TaskCalendar from '@/components/TaskCalendar';
-import { fetchAllTasks } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 
 export default async function DashboardPage() {
-  // ── Live server-side fetch ─────────────────────────────────────────────────
-  // Phase 4: runs on every page visit (Server Component — no caching by default)
-  const tasks = await fetchAllTasks();
+  // ── Authenticated server-side fetch ──────────────────────────────────────
+  // RLS on the tasks table means this automatically returns ONLY the
+  // current user's tasks — no extra filtering needed.
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .order('due_date', { ascending: true });
+
+  const tasks = error ? [] : (data ?? []);
 
   const now         = new Date();
   const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
@@ -91,7 +98,8 @@ export default async function DashboardPage() {
 
       {/* ── Calendar preview ── */}
       <section className="animate-fade-in-up">
-        <TaskCalendar tasks={tasks} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <TaskCalendar tasks={tasks as any} />
       </section>
     </div>
   );

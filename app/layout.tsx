@@ -1,20 +1,18 @@
 import type { Metadata } from 'next';
 import { Teko, Caveat } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import AddTaskFAB from '@/components/AddTaskFAB';
 import ToastProvider from '@/components/ToastProvider';
 import ThemeProvider from '@/components/ThemeProvider';
 
-const teko = Teko({ 
-  subsets: ['latin'], 
+const teko = Teko({
+  subsets: ['latin'],
   weight: ['400', '600', '700'],
-  variable: '--font-display'
+  variable: '--font-display',
 });
 
-const caveat = Caveat({ 
-  subsets: ['latin'], 
-  variable: '--font-handwriting' 
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-handwriting',
 });
 
 export const metadata: Metadata = {
@@ -37,11 +35,7 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="min-h-full flex flex-col antialiased bg-transparent">
         <ThemeProvider>
           <ToastProvider>
-            <Navbar />
-            <main id="main-content" className="flex-1 bg-transparent">
-              {children}
-            </main>
-            <AddTaskFAB />
+            {children}
           </ToastProvider>
         </ThemeProvider>
       </body>

@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import AddTaskModal from './AddTaskModal';
 import { useToast } from './ToastProvider';
-import { createTask } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/client';
 import type { NewTask } from '@/lib/types';
 
 export default function AddTaskFAB() {
@@ -19,7 +19,15 @@ export default function AddTaskFAB() {
   async function handleSubmit(task: NewTask) {
     setIsSaving(true);
     try {
-      const createdTask = await createTask(task);
+      const supabase = createClient();
+      const { data: createdTask, error } = await supabase
+        .from('tasks')
+        .insert(task)
+        .select()
+        .single();
+
+      if (error) throw new Error(error.message);
+
       // 1. Optimistically update the calendar (and any other listener) immediately
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('tasks-updated', { detail: createdTask }));
