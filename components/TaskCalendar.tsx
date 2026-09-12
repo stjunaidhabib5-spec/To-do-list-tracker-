@@ -15,29 +15,21 @@ const getNoteColor = (dayIndex: number) => {
 
 const isSameCalendarDay = (taskDateVal: any, cellDate: Date) => {
   if (!taskDateVal) return false;
-  
+
   const taskDate = new Date(taskDateVal);
   if (isNaN(taskDate.getTime())) return false;
 
-  // 1. Local Date Match (same year, month, day in user's local timezone)
-  const matchLocal = 
+  // Compare using local-timezone year/month/day components.
+  // This is intentionally NOT UTC-based — a task stored as
+  // "2026-09-22T06:13:00Z" in UTC correctly reads as Sep 22 in UTC+6.
+  // We purposely avoid the raw ISO string prefix check because that would
+  // compare the UTC date string against the local cell date, causing
+  // off-by-one errors for users whose UTC offset shifts the UTC date.
+  return (
     taskDate.getFullYear() === cellDate.getFullYear() &&
-    taskDate.getMonth() === cellDate.getMonth() &&
-    taskDate.getDate() === cellDate.getDate();
-
-  // 2. Formatted String Match (YYYY-MM-DD)
-  const formatLocal = (d: Date) => 
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  
-  const matchFormatted = formatLocal(taskDate) === formatLocal(cellDate);
-
-  // 3. Raw ISO string prefix match (in case it is stored as YYYY-MM-DD...)
-  let matchRaw = false;
-  if (typeof taskDateVal === 'string') {
-    matchRaw = taskDateVal.startsWith(formatLocal(cellDate));
-  }
-
-  return matchLocal || matchFormatted || matchRaw;
+    taskDate.getMonth()    === cellDate.getMonth()    &&
+    taskDate.getDate()     === cellDate.getDate()
+  );
 };
 
 interface TaskCalendarProps {
@@ -167,14 +159,12 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {i}
         </div>
         
-        {/* Tasks (handwriting style) */}
+        {/* Tasks (handwriting style) — max 2 visible, rest behind +N more badge */}
         <div className="mt-1 flex flex-col gap-0.5 w-full text-left">
-          {/* 1. Dynamic task count: show first 3 tasks */}
-          {dayTasks.slice(0, 3).map(task => (
-            <div 
+          {dayTasks.slice(0, 2).map(task => (
+            <div
               key={task.id}
               onClick={(e) => {
-                // 3. Clicking a single task opens Task Detail modal
                 e.stopPropagation();
                 setSelectedTaskDetail(task);
               }}
@@ -186,19 +176,19 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
             </div>
           ))}
 
-          {/* If tasks > 3 show +X more without any underline */}
-          {dayTasks.length > 3 && (
+          {/* +N more — clean text, no background, subtle hover underline */}
+          {dayTasks.length > 2 && (
             <button
               type="button"
               onClick={(e) => {
-                // 2. Clicking "+X more" opens Day View modal with all tasks for that day
                 e.stopPropagation();
                 setSelectedDayTasks({ year, month, date: i, tasks: dayTasks });
               }}
-              className="font-handwriting text-xs font-bold text-slate-600 hover:text-slate-950 dark:text-slate-700 dark:hover:text-black text-left pt-0.5 cursor-pointer no-underline transition-colors select-none"
+              className="font-handwriting text-[11px] font-semibold leading-tight text-slate-600 dark:text-slate-800 opacity-70 hover:opacity-100 hover:underline cursor-pointer select-none bg-transparent border-0 p-0 text-left transition-opacity"
               style={{ transform: 'rotate(-1.5deg)' }}
+              title={`${dayTasks.length - 2} more tasks — click to see all`}
             >
-              +{dayTasks.length - 3} more
+              +{dayTasks.length - 2} more
             </button>
           )}
         </div>

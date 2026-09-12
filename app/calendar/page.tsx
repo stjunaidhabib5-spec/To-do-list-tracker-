@@ -2,6 +2,11 @@ import type { Metadata } from 'next';
 import TaskCalendar from '@/components/TaskCalendar';
 import { fetchAllTasks } from '@/lib/supabase';
 
+// Force a fresh server render on every request — prevents stale cached data
+// from hiding tasks that were created after the last render.
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Calendar — TaskFlow',
   description: 'Visual monthly and weekly calendar view for all your tasks and deadlines.',

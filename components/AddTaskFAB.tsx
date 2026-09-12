@@ -20,12 +20,14 @@ export default function AddTaskFAB() {
     setIsSaving(true);
     try {
       const createdTask = await createTask(task);
+      // 1. Optimistically update the calendar (and any other listener) immediately
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('tasks-updated', { detail: createdTask }));
       }
+      // 2. Close modal AFTER save — the modal no longer closes itself
       close();
       showToast('Task added! ✨', 'success');
-      // Re-run Server Components on the current page so the task list refreshes
+      // 3. Re-run Server Components so TaskCalendar gets fresh props from Supabase
       router.refresh();
     } catch (err) {
       showToast(`Failed to create task: ${(err as Error).message}`, 'error');

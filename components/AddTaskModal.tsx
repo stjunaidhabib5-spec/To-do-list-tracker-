@@ -50,9 +50,10 @@ export default function AddTaskModal({ isOpen, onClose, onSubmit, isSaving = fal
       due_date: new Date(data.get('due_date') as string).toISOString(),
       is_completed: false,
     };
+    // Only pass the task to the parent — do NOT close or reset here.
+    // The parent (AddTaskFAB) is async and must control close timing
+    // so the tasks-updated event fires AFTER the DB write resolves.
     onSubmit(task);
-    form.reset();
-    onClose();
   }
 
   return (
