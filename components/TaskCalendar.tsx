@@ -169,10 +169,17 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                 setSelectedTaskDetail(task);
               }}
               title={task.title}
-              className="font-handwriting text-sm leading-tight text-slate-800 dark:text-slate-900 font-semibold truncate cursor-pointer hover:text-indigo-900 select-none"
+              className="font-handwriting text-sm leading-tight font-semibold cursor-pointer hover:text-indigo-900 select-none flex items-start gap-1 w-full"
               style={{ transform: 'rotate(-1.5deg)' }}
             >
-              • {task.title}
+              <span className="text-slate-800 dark:text-slate-900 shrink-0">•</span>
+              <span className={`truncate ${
+                task.is_completed 
+                  ? 'text-slate-800/80 dark:text-slate-900/80 line-through decoration-slate-700 dark:decoration-slate-500 decoration-[1.5px]' 
+                  : 'text-slate-800 dark:text-slate-900'
+              }`}>
+                {task.title}
+              </span>
             </div>
           ))}
 
@@ -356,7 +363,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
                 </button>
                 
                 <div className="mb-4 pr-8">
-                  <h3 className="font-handwriting text-4xl font-bold text-slate-900 leading-tight">
+                  <h3 className={`font-handwriting text-4xl font-bold leading-tight ${selectedTaskDetail.is_completed ? 'line-through opacity-70 text-slate-600' : 'text-slate-900'}`}>
                     {selectedTaskDetail.title}
                   </h3>
                 </div>
