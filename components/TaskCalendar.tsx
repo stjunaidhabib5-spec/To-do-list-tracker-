@@ -159,9 +159,9 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           {i}
         </div>
         
-        {/* Tasks (handwriting style) — max 2 visible, rest behind +N more badge */}
+        {/* Tasks (handwriting style) — max 3 visible, rest behind +N more */}
         <div className="mt-1 flex flex-col gap-0.5 w-full text-left">
-          {dayTasks.slice(0, 2).map(task => (
+          {dayTasks.slice(0, 3).map(task => (
             <div
               key={task.id}
               onClick={(e) => {
@@ -177,7 +177,7 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
           ))}
 
           {/* +N more — clean text, no background, subtle hover underline */}
-          {dayTasks.length > 2 && (
+          {dayTasks.length > 3 && (
             <button
               type="button"
               onClick={(e) => {
@@ -186,9 +186,9 @@ export default function TaskCalendar({ tasks }: TaskCalendarProps) {
               }}
               className="font-handwriting text-[11px] font-semibold leading-tight text-slate-600 dark:text-slate-800 opacity-70 hover:opacity-100 hover:underline cursor-pointer select-none bg-transparent border-0 p-0 text-left transition-opacity"
               style={{ transform: 'rotate(-1.5deg)' }}
-              title={`${dayTasks.length - 2} more tasks — click to see all`}
+              title={`${dayTasks.length - 3} more tasks — click to see all`}
             >
-              +{dayTasks.length - 2} more
+              +{dayTasks.length - 3} more
             </button>
           )}
         </div>
